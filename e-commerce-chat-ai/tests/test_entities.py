@@ -26,7 +26,7 @@ def test_product_invalid_stock():
 
 def test_product_empty_name():
     """Prueba que el nombre del producto no puede estar vacío."""
-    with pytest.raises(ValueError, match="El nombre no puede estar vacío."):
+    with pytest.raises(ValueError, match="El nombre del producto no puede estar vacío."):
         Product(id=1, name="", brand="Nike", category="Running", size="42", color="Negro", price=120.0, stock=10, description="Zapatos para correr.")
 
 def test_product_is_available():
@@ -45,7 +45,7 @@ def test_product_reduce_stock():
 def test_product_reduce_stock_insufficient():
     """Prueba que no se puede reducir más stock del disponible."""
     product = Product(id=1, name="Zapatos Nike", brand="Nike", category="Running", size="42", color="Negro", price=120.0, stock=5, description="Zapatos para correr.")
-    with pytest.raises(ValueError, match="Stock insuficiente para reducir en 6 unidades."):
+    with pytest.raises(ValueError, match="Stock insuficiente. Stock actual: 5, se intentó reducir: 6"):
         product.reduce_stock(6)
 
 def test_product_reduce_stock_negative_quantity():

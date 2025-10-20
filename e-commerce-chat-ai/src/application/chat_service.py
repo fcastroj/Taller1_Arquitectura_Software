@@ -91,7 +91,7 @@ class ChatService:
     def get_session_history(self, session_id: str) -> List[ChatHistoryDTO]:
         """Obtiene el historial de una sesión."""
         history = self.chat_repository.get_session_history(session_id)
-        return [ChatHistoryDTO.from_attributes(msg) for msg in history]
+        return [ChatHistoryDTO.model_validate(msg, from_attributes=True) for msg in history]
 
     def clear_session_history(self, session_id: str) -> int:
         """Limpia el historial de una sesión."""

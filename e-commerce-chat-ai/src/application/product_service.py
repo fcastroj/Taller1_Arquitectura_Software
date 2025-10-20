@@ -27,7 +27,7 @@ class ProductService:
             List[ProductDTO]: Una lista de todos los productos.
         """
         products = self.product_repository.get_all()
-        return [ProductDTO.from_attributes(p) for p in products]
+        return [ProductDTO.model_validate(p, from_attributes=True) for p in products]
 
     def get_available_products(self) -> List[ProductDTO]:
         """
@@ -38,7 +38,7 @@ class ProductService:
         """
         all_products = self.product_repository.get_all()
         available_products = [p for p in all_products if p.is_available()]
-        return [ProductDTO.from_attributes(p) for p in available_products]
+        return [ProductDTO.model_validate(p, from_attributes=True) for p in available_products]
 
     def get_product_by_id(self, product_id: int) -> Optional[ProductDTO]:
         """
@@ -56,7 +56,7 @@ class ProductService:
         product = self.product_repository.get_by_id(product_id)
         if not product:
             raise ProductNotFoundError(product_id=product_id)
-        return ProductDTO.from_attributes(product)
+        return ProductDTO.model_validate(product, from_attributes=True)
 
     def create_product(self, product_dto: ProductDTO) -> ProductDTO:
         """
@@ -77,7 +77,7 @@ class ProductService:
             product_entity = Product(**product_dto.model_dump())
             
             saved_product = self.product_repository.save(product_entity)
-            return ProductDTO.from_attributes(saved_product)
+            return ProductDTO.model_validate(saved_product, from_attributes=True)
         except ValueError as e:
             raise InvalidProductDataError(str(e))
 
@@ -110,7 +110,7 @@ class ProductService:
             existing_product.__post_init__()
 
             updated_product = self.product_repository.save(existing_product)
-            return ProductDTO.from_attributes(updated_product)
+            return ProductDTO.model_validate(updated_product, from_attributes=True)
         except ValueError as e:
             raise InvalidProductDataError(str(e))
 
@@ -153,4 +153,4 @@ class ProductService:
         if "category" in filters:
             products = [p for p in products if p.category.lower() == filters["category"].lower()]
             
-        return [ProductDTO.from_attributes(p) for p in products]
+        return [ProductDTO.model_validate(p, from_attributes=True) for p in products]

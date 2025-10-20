@@ -207,7 +207,6 @@ def chat_service(mock_chat_repo, mock_product_repo, mock_ai_service):
     )
 
 # Tests for ChatService
-@pytest.mark.asyncio
 async def test_process_message(chat_service: ChatService, mock_chat_repo: MockChatRepository):
     """Test successful processing of a user message."""
     request = ChatMessageRequestDTO(session_id="session1", message="Hello")
@@ -222,7 +221,6 @@ async def test_process_message(chat_service: ChatService, mock_chat_repo: MockCh
     assert history[0].role == "user"
     assert history[1].role == "assistant"
 
-@pytest.mark.asyncio
 async def test_process_message_error(chat_service: ChatService):
     """Test that ChatServiceError is raised when the AI service fails."""
     request = ChatMessageRequestDTO(session_id="session1", message="trigger error")

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -31,9 +31,7 @@ class ProductDTO(BaseModel):
             raise ValueError('El stock no puede ser un número negativo.')
         return v
 
-    class Config:
-        """Permite crear el DTO desde un objeto de modelo ORM (o cualquier objeto con atributos)."""
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ChatMessageRequestDTO(BaseModel):
     """DTO para recibir un nuevo mensaje de chat del usuario."""
@@ -61,6 +59,4 @@ class ChatHistoryDTO(BaseModel):
     message: str
     timestamp: datetime
 
-    class Config:
-        """Permite crear el DTO desde un objeto de modelo ORM."""
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
