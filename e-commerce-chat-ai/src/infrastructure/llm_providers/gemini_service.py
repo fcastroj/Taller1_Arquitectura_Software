@@ -21,8 +21,7 @@ class GeminiService(IAIService):
             raise ValueError("La API key de Gemini no está configurada en las variables de entorno.")
         
         genai.configure(api_key=GEMINI_API_KEY)
-        # Usamos un modelo moderno y rápido como gemini-1.5-flash
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model = genai.GenerativeModel('gemini-pro-latest')
 
     def _format_products_info(self, products: List[Product]) -> str:
         """
