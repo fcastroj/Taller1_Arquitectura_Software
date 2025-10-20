@@ -1,110 +1,175 @@
-# E-commerce Chat AI
+# IA de Chat para E-commerce
 
-This project implements an e-commerce chat AI using a hexagonal architecture. It provides functionalities for product information retrieval and chat interactions.
+Este proyecto implementa una IA de chat para e-commerce utilizando una arquitectura hexagonal. Proporciona funcionalidades para la recuperación de información de productos y la interacción por chat.
 
-## Setup and Installation
+## Configuración e Instalación
 
-### Prerequisites
+### Prerrequisitos
 
 *   Python 3.11
-*   Docker (optional, for containerized deployment)
+*   Docker (opcional, para despliegue en contenedores)
 
-### Local Setup
+### Configuración Local
 
-1.  **Clone the repository:**
+1.  **Clonar el repositorio:**
     ```bash
     git clone <repository_url>
     cd e-commerce-chat-ai
     ```
 
-2.  **Create a virtual environment:**
+2.  **Crear un entorno virtual:**
     ```bash
     python -m venv venv
-    source venv/Scripts/activate  # On Windows
-    # source venv/bin/activate    # On macOS/Linux
+    source venv/Scripts/activate  # En Windows
+    # source venv/bin/activate    # En macOS/Linux
     ```
 
-3.  **Install dependencies:**
+3.  **Instalar dependencias:**
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Configure environment variables:**
-    Create a `.env` file in the root directory of the project based on `.env.example`.
+4.  **Configurar variables de entorno:**
+    Crea un archivo `.env` en el directorio raíz del proyecto basado en `.env.example`.
     ```
-    GEMINI_API_KEY=your_gemini_api_key_here
+    GEMINI_API_KEY=tu_clave_api_gemini_aqui
     DATABASE_URL=sqlite:///./data/ecommerce_chat.db
     ENVIRONMENT=development
     ```
-    Replace `your_gemini_api_key_here` with your actual Google Gemini API key.
+    Reemplaza `tu_clave_api_gemini_aqui` con tu clave API real de Google Gemini.
 
-### Running the Application Locally
+### Ejecutar la Aplicación Localmente
 
 ```bash
 uvicorn src.infrastructure.api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-The API will be accessible at `http://localhost:8000`.
+La API será accesible en `http://localhost:8000`.
 
-### Docker Setup
+### Configuración de Docker
 
-1.  **Build the Docker image:**
+1.  **Construir la imagen de Docker:**
     ```bash
     docker build -t ecommerce-chat-ai .
     ```
 
-### Running with Docker Compose
+### Ejecutar con Docker Compose
 
-1.  **Configure environment variables:**
-    Ensure you have a `.env` file configured as described in the "Local Setup" section.
+1.  **Configurar variables de entorno:**
+    Asegúrate de tener un archivo `.env` configurado como se describe en la sección "Configuración Local".
 
-2.  **Start the services:**
+2.  **Iniciar los servicios:**
     ```bash
     docker-compose up --build
     ```
-    The API will be accessible at `http://localhost:8000`.
+    La API será accesible en `http://localhost:8000`.
 
-## Architecture
+## Arquitectura
 
-This project follows a Hexagonal Architecture (also known as Ports and Adapters) to ensure a clear separation of concerns, maintainability, and testability. The core idea is to isolate the business logic (domain and application layers) from external concerns like databases, UI, or external services.
+Este proyecto sigue una Arquitectura Hexagonal (también conocida como Puertos y Adaptadores) para asegurar una clara separación de preocupaciones, mantenibilidad y capacidad de prueba. La idea central es aislar la lógica de negocio (capas de dominio y aplicación) de preocupaciones externas como bases de datos, UI o servicios externos.
 
-### Layers:
+### Capas:
 
-*   **Domain Layer:** Contains the core business entities, value objects, and business rules. It is independent of any external technology.
-*   **Application Layer:** Orchestrates the domain objects to fulfill use cases. It defines interfaces (ports) that the infrastructure layer will implement.
-*   **Infrastructure Layer:** Contains the adapters that connect the application to the outside world. This includes implementations for databases, external APIs (like the LLM provider), and the web API.
+*   **Capa de Dominio:** Contiene las entidades de negocio centrales, objetos de valor y reglas de negocio. Es independiente de cualquier tecnología externa.
+*   **Capa de Aplicación:** Orquesta los objetos de dominio para cumplir con los casos de uso. Define interfaces (puertos) que la capa de infraestructura implementará.
+*   **Capa de Infraestructura:** Contiene los adaptadores que conectan la aplicación con el mundo exterior. Esto incluye implementaciones para bases de datos, APIs externas (como el proveedor LLM) y la API web.
 
-### Interaction Flow:
+### Flujo de Interacción:
 
-1.  **External Agents (e.g., HTTP requests):** Interact with the `Infrastructure` layer (specifically the API adapter).
-2.  **API Adapter:** Translates external requests into calls to the `Application` layer's services.
-3.  **Application Services:** Use `Domain` entities and `Domain Repositories` (interfaces defined in the domain, implemented in infrastructure) to perform business logic.
-4.  **Infrastructure Adapters (e.g., Database, LLM Provider):** Implement the `Domain Repository` interfaces and interact with external systems.
+1.  **Agentes Externos (ej. solicitudes HTTP):** Interactúan con la capa de `Infraestructura` (específicamente el adaptador de API).
+2.  **Adaptador de API:** Traduce las solicitudes externas en llamadas a los servicios de la capa de `Aplicación`.
+3.  **Servicios de Aplicación:** Utilizan entidades de `Dominio` y `Repositorios de Dominio` (interfaces definidas en el dominio, implementadas en infraestructura) para realizar la lógica de negocio.
+4.  **Adaptadores de Infraestructura (ej. Base de Datos, Proveedor LLM):** Implementan las interfaces del `Repositorio de Dominio` e interactúan con sistemas externos.
 
-**Diagrams illustrating this architecture should be added here.**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    CLIENTE (Frontend)                       │
+│                  (Navegador, Postman, etc.)                 │
+└────────────────────────┬────────────────────────────────────┘
+                         │ Solicitudes HTTP
+                         ↓
+┌─────────────────────────────────────────────────────────────┐
+│              CAPA DE INFRAESTRUCTURA                        │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  FastAPI (main.py)                                   │  │
+│  │  - Endpoints HTTP                                    │  │
+│  │  - Validación de solicitudes                         │  │
+│  │  - Serialización de respuestas                       │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                         │                                   │
+│                         ↓                                   │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  Repositorios (SQLAlchemy)                           │  │
+│  │  - product_repository.py                             │  │
+│  │  - chat_repository.py                                │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                         │                                   │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  Servicios Externos                                  │  │
+│  │  - gemini_service.py (IA de Google Gemini)           │  │
+│  └──────────────────────────────────────────────────────┘  │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                         ↓
+┌─────────────────────────────────────────────────────────────┐
+│              CAPA DE APLICACIÓN                             │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  Servicios (Casos de Uso)                             │  │
+│  │  - product_service.py                                │  │
+│  │  - chat_service.py                                   │  │
+│  │  Orquesta: Repositorios + Servicios Externos         │  │
+│  └──────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  DTOs (Objetos de Transferencia de Datos)            │  │
+│  │  - Validación con Pydantic                           │  │
+│  │  - Transformación de datos                           │  │
+│  └──────────────────────────────────────────────────────┘  │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                         ↓
+┌─────────────────────────────────────────────────────────────┐
+│              CAPA DE DOMINIO                                │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  Entidades (Lógica de Negocio)                       │  │
+│  │  - Product                                           │  │
+│  │  - ChatMessage                                       │  │
+│  │  - ChatContext                                       │  │
+│  └──────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  Repositorios (Interfaces)                           │  │
+│  │  - IProductRepository                                │  │
+│  │  - IChatRepository                                   │  │
+│  └──────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  Excepciones (Excepciones del Dominio)               │  │
+│  │  - ProductNotFoundError                              │  │
+│  │  - InvalidProductDataError                           │  │
+│  └──────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
 
-## API Documentation
+## Documentación de la API
 
-This project uses FastAPI, which automatically generates interactive API documentation (Swagger UI).
+Este proyecto utiliza FastAPI, que genera automáticamente documentación interactiva de la API (Swagger UI).
 
-Once the application is running (either locally or via Docker Compose), you can access the API documentation at:
+Una vez que la aplicación esté en ejecución (ya sea localmente o mediante Docker Compose), puedes acceder a la documentación de la API en:
 
 *   **Swagger UI:** `http://localhost:8000/docs`
 *   **ReDoc:** `http://localhost:8000/redoc`
 
-These interfaces allow you to explore the available endpoints, their expected request/response formats, and even test them directly from your browser.
+Estas interfaces te permiten explorar los endpoints disponibles, sus formatos esperados de solicitud/respuesta e incluso probarlos directamente desde tu navegador.
 
-## Deployment Guide
+## Guía de Despliegue
 
-For local development and testing, the `docker-compose.yml` file provides a convenient way to run the application in a containerized environment. Refer to the "Running with Docker Compose" section for instructions.
+Para el desarrollo y las pruebas locales, el archivo `docker-compose.yml` proporciona una forma conveniente de ejecutar la aplicación en un entorno en contenedores. Consulta la sección "Ejecutar con Docker Compose" para obtener instrucciones.
 
-For production deployments, consider using orchestration tools like Kubernetes, or cloud-specific services (e.g., AWS ECS, Google Cloud Run) to manage scalability, reliability, and other production-grade requirements. The provided `Dockerfile` can be used as a base for building your production images.
+Para despliegues en producción, considera utilizar herramientas de orquestación como Kubernetes, o servicios específicos de la nube (ej. AWS ECS, Google Cloud Run) para gestionar la escalabilidad, fiabilidad y otros requisitos de nivel de producción. El `Dockerfile` proporcionado se puede utilizar como base para construir tus imágenes de producción.
 
-## Testing
+## Pruebas
 
-To run the unit and integration tests for the project, use `pytest`:
+Para ejecutar las pruebas unitarias y de integración del proyecto, utiliza `pytest`:
 
 ```bash
 pytest
 ```
 
-This command will discover and execute all tests located in the `tests/` directory.
+Este comando descubrirá y ejecutará todas las pruebas ubicadas en el directorio `tests/`.
