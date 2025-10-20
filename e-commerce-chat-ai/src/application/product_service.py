@@ -135,14 +135,15 @@ class ProductService:
 
     def search_products(self, filters: Dict[str, Any]) -> List[ProductDTO]:
         """
-        Busca productos basados en un diccionario de filtros.
+        Busca productos basándose en un conjunto de filtros proporcionados.
 
         Args:
-            filters (Dict[str, Any]): Un diccionario con los filtros a aplicar.
-                Ej: {'brand': 'Nike', 'category': 'Running'}
+            filters (Dict[str, Any]): Un diccionario donde las claves son los campos
+                por los que se desea filtrar (ej. 'brand', 'category') y los valores
+                son los criterios de búsqueda.
 
         Returns:
-            List[ProductDTO]: Una lista de productos que coinciden con los filtros.
+            List[ProductDTO]: Una lista de objetos ProductDTO que cumplen con todos los filtros especificados.
         """
         # Esta es una implementación simple. Una real podría ser más compleja.
         products = self.product_repository.get_all()

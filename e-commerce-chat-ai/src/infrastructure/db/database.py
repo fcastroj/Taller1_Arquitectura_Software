@@ -1,3 +1,9 @@
+"""
+Este módulo gestiona la configuración de la base de datos y las operaciones relacionadas.
+Define el motor de la base de datos, la sesión local y funciones de utilidad para
+la inicialización y la gestión de sesiones.
+"""
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base

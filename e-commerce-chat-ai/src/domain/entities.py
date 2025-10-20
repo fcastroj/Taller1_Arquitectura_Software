@@ -31,8 +31,11 @@ class Product:
 
     def __post_init__(self):
         """
-        Validaciones que se ejecutan después de crear el objeto.
-        Lanza ValueError si alguna validación falla.
+        Realiza validaciones de los atributos del producto después de su inicialización.
+        Asegura que el nombre no esté vacío, el precio sea positivo y el stock no sea negativo.
+
+        Raises:
+            ValueError: Si alguna de las validaciones falla.
         """
         if not self.name or not self.name.strip():
             raise ValueError("El nombre del producto no puede estar vacío.")
@@ -101,7 +104,11 @@ class ChatMessage:
 
     def __post_init__(self):
         """
-        Validaciones que se ejecutan después de crear el objeto.
+        Realiza validaciones de los atributos del mensaje de chat después de su inicialización.
+        Asegura que el ID de sesión y el mensaje no estén vacíos, y que el rol sea válido.
+
+        Raises:
+            ValueError: Si alguna de las validaciones falla.
         """
         if not self.session_id or not self.session_id.strip():
             raise ValueError("El session_id no puede estar vacío.")
@@ -111,11 +118,21 @@ class ChatMessage:
             raise ValueError("El mensaje no puede estar vacío.")
 
     def is_from_user(self) -> bool:
-        """Retorna True si el mensaje es del usuario."""
+        """
+        Verifica si el mensaje fue enviado por el usuario.
+
+        Returns:
+            bool: True si el rol del mensaje es 'user', False en caso contrario.
+        """
         return self.role == 'user'
 
     def is_from_assistant(self) -> bool:
-        """Retorna True si el mensaje es del asistente."""
+        """
+        Verifica si el mensaje fue enviado por el asistente.
+
+        Returns:
+            bool: True si el rol del mensaje es 'assistant', False en caso contrario.
+        """
         return self.role == 'assistant'
 
 
@@ -134,7 +151,8 @@ class ChatContext:
 
     def get_recent_messages(self) -> List[ChatMessage]:
         """
-        Retorna los últimos N mensajes (definido por max_messages).
+        Retorna una sublista de los mensajes más recientes de la conversación,
+        limitada por `max_messages`.
 
         Returns:
             List[ChatMessage]: Una lista con los mensajes más recientes.

@@ -11,6 +11,12 @@ class GeminiService(IAIService):
     Implementación del servicio de IA utilizando la API de Google Gemini.
     """
     def __init__(self):
+        """
+        Inicializa el servicio Gemini, configurando la API key y el modelo.
+
+        Raises:
+            ValueError: Si la API key de Gemini no está configurada en las variables de entorno.
+        """
         if not GEMINI_API_KEY:
             raise ValueError("La API key de Gemini no está configurada en las variables de entorno.")
         
@@ -19,7 +25,17 @@ class GeminiService(IAIService):
         self.model = genai.GenerativeModel('gemini-1.5-flash')
 
     def _format_products_info(self, products: List[Product]) -> str:
-        """Formatea la lista de productos en un string legible para el prompt."""
+        """
+        Formatea una lista de objetos `Product` en una cadena de texto legible.
+        Esta cadena se utiliza para incluir información de productos en el prompt de la IA.
+
+        Args:
+            products (List[Product]): Una lista de entidades de producto.
+
+        Returns:
+            str: Una cadena de texto con la información formateada de los productos.
+                 Retorna un mensaje indicando que no hay productos si la lista está vacía.
+        """
         if not products:
             return "No hay productos disponibles en este momento."
         

@@ -1,3 +1,8 @@
+"""
+Este módulo gestiona la configuración de la aplicación, cargando variables de entorno.
+Define constantes para la clave de la API de Gemini, la URL de la base de datos y el entorno.
+"""
+
 import os
 from dotenv import load_dotenv
 

@@ -1,3 +1,9 @@
+"""
+Este módulo define las interfaces (puertos) para los servicios de la capa de aplicación.
+Estas interfaces aseguran que la lógica de negocio sea independiente de las implementaciones
+específicas de la infraestructura, como los proveedores de IA.
+"""
+
 from abc import ABC, abstractmethod
 from typing import List
 from src.domain.entities import Product, ChatContext

@@ -89,10 +89,26 @@ class ChatService:
             raise ChatServiceError(f"Error procesando el mensaje: {e}")
 
     def get_session_history(self, session_id: str) -> List[ChatHistoryDTO]:
-        """Obtiene el historial de una sesión."""
+        """
+        Obtiene el historial completo de mensajes para una sesión de chat específica.
+
+        Args:
+            session_id: El identificador único de la sesión de chat.
+
+        Returns:
+            Una lista de DTOs que representan el historial de mensajes de la sesión.
+        """
         history = self.chat_repository.get_session_history(session_id)
         return [ChatHistoryDTO.model_validate(msg, from_attributes=True) for msg in history]
 
     def clear_session_history(self, session_id: str) -> int:
-        """Limpia el historial de una sesión."""
+        """
+        Elimina todos los mensajes del historial para una sesión de chat específica.
+
+        Args:
+            session_id: El identificador único de la sesión de chat.
+
+        Returns:
+            El número de mensajes eliminados.
+        """
         return self.chat_repository.delete_session_history(session_id)

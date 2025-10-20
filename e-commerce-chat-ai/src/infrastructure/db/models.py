@@ -1,3 +1,8 @@
+"""
+Este módulo define los modelos de base de datos (ORM) utilizando SQLAlchemy.
+Cada clase representa una tabla en la base de datos y sus respectivas columnas.
+"""
+
 from sqlalchemy import (
     Column, Integer, String, Float, Text, DateTime, func
 )
@@ -6,6 +11,7 @@ from .database import Base
 class ProductModel(Base):
     """
     Modelo ORM de SQLAlchemy que representa la tabla 'products'.
+    Almacena la información detallada de cada producto disponible en el e-commerce.
     """
     __tablename__ = "products"
 
@@ -22,6 +28,8 @@ class ProductModel(Base):
 class ChatMemoryModel(Base):
     """
     Modelo ORM de SQLAlchemy que representa la tabla 'chat_memory'.
+    Almacena el historial de mensajes de las conversaciones del chat, incluyendo
+    el ID de sesión, el rol (usuario/asistente), el mensaje y la marca de tiempo.
     """
     __tablename__ = "chat_memory"
 

@@ -1,3 +1,8 @@
+"""
+Este módulo contiene la función para cargar datos iniciales en la base de datos.
+Es útil para poblar la base de datos con información de ejemplo al inicio de la aplicación.
+"""
+
 from sqlalchemy.orm import Session
 from .models import ProductModel
 

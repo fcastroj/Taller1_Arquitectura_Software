@@ -1,3 +1,9 @@
+"""
+Este módulo define las interfaces (puertos) para los repositorios de la capa de dominio.
+Estas interfaces abstraen los detalles de almacenamiento de datos, permitiendo que
+la lógica de negocio sea independiente de la tecnología de persistencia.
+"""
+
 from abc import ABC, abstractmethod
 from typing import List, Optional
 from .entities import Product, ChatMessage

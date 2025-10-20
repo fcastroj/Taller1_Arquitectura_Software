@@ -42,10 +42,28 @@ def on_startup():
 
 # --- Inyección de Dependencias ---
 def get_product_service(db: Session = Depends(get_db)) -> ProductService:
+    """
+    Provee una instancia de `ProductService` con su repositorio de productos.
+
+    Args:
+        db (Session): Sesión de base de datos inyectada por FastAPI.
+
+    Returns:
+        ProductService: Una instancia del servicio de productos.
+    """
     repo = SQLProductRepository(db)
     return ProductService(repo)
 
 def get_chat_service(db: Session = Depends(get_db)) -> ChatService:
+    """
+    Provee una instancia de `ChatService` con sus repositorios y servicio de IA.
+
+    Args:
+        db (Session): Sesión de base de datos inyectada por FastAPI.
+
+    Returns:
+        ChatService: Una instancia del servicio de chat.
+    """
     chat_repo = SQLChatRepository(db)
     product_repo = SQLProductRepository(db)
     ai_service = GeminiService()
@@ -71,12 +89,28 @@ def health_check():
 
 @app.get("/products", response_model=List[ProductDTO], tags=["Products"])
 def get_all_products(product_service: ProductService = Depends(get_product_service)):
-    """Obtiene la lista completa de todos los productos."""
+    """
+    Obtiene la lista completa de todos los productos disponibles en el sistema.
+
+    Returns:
+        List[ProductDTO]: Una lista de objetos ProductDTO que representan todos los productos.
+    """
     return product_service.get_all_products()
 
 @app.get("/products/{product_id}", response_model=ProductDTO, tags=["Products"])
 def get_product_by_id(product_id: int, product_service: ProductService = Depends(get_product_service)):
-    """Obtiene un producto específico por su ID."""
+    """
+    Obtiene los detalles de un producto específico utilizando su identificador único.
+
+    Args:
+        product_id (int): El ID del producto a buscar.
+
+    Raises:
+        HTTPException: Si el producto no se encuentra (estado 404).
+
+    Returns:
+        ProductDTO: El objeto ProductDTO correspondiente al ID proporcionado.
+    """
     try:
         product = product_service.get_product_by_id(product_id)
         return product
@@ -91,7 +125,18 @@ async def process_chat_message(
     chat_service: ChatService = Depends(get_chat_service)
 ):
     """
-    Procesa un mensaje del usuario a través del chat y obtiene una respuesta de la IA.
+    Procesa un mensaje entrante del usuario, lo envía al servicio de chat para
+    obtener una respuesta de la IA y devuelve la interacción completa.
+
+    Args:
+        request (ChatMessageRequestDTO): El DTO que contiene el ID de la sesión y el mensaje del usuario.
+        chat_service (ChatService): El servicio de chat inyectado para manejar la lógica de negocio.
+
+    Raises:
+        HTTPException: Si ocurre un error en el servicio de chat (estado 500).
+
+    Returns:
+        ChatMessageResponseDTO: El DTO que contiene el mensaje del usuario, la respuesta del asistente y la marca de tiempo.
     """
     try:
         response = await chat_service.process_message(request)
@@ -103,11 +148,29 @@ async def process_chat_message(
 
 @app.get("/chat/history/{session_id}", response_model=List[ChatHistoryDTO], tags=["Chat"])
 def get_chat_history(session_id: str, chat_service: ChatService = Depends(get_chat_service)):
-    """Obtiene el historial de conversación para una sesión específica."""
+    """
+    Recupera el historial completo de mensajes para una sesión de chat específica.
+
+    Args:
+        session_id (str): El ID único de la sesión de chat.
+        chat_service (ChatService): El servicio de chat inyectado.
+
+    Returns:
+        List[ChatHistoryDTO]: Una lista de DTOs que representan el historial de mensajes de la sesión.
+    """
     return chat_service.get_session_history(session_id)
 
 @app.delete("/chat/history/{session_id}", tags=["Chat"])
 def delete_chat_history(session_id: str, chat_service: ChatService = Depends(get_chat_service)):
-    """Elimina todo el historial de una sesión de chat."""
+    """
+    Elimina todo el historial de conversación asociado a una sesión de chat específica.
+
+    Args:
+        session_id (str): El ID único de la sesión de chat cuyo historial se desea eliminar.
+        chat_service (ChatService): El servicio de chat inyectado.
+
+    Returns:
+        dict: Un mensaje de confirmación indicando que el historial ha sido eliminado y cuántos mensajes se borraron.
+    """
     deleted_count = chat_service.clear_session_history(session_id)
     return {"message": f"Historial de la sesión '{session_id}' eliminado. Se borraron {deleted_count} mensajes."}
